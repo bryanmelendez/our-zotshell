@@ -31,8 +31,15 @@ int main(void)
         }
         args[++arg_num] = NULL; // terminates the argument list
         
-        // fork the process to execute the input command
-        pid = fork();
+        // If statements to handle the exit condition
+        if(strcmp(args[0], "exit") != 0)
+            // If the command is not exit
+            // fork the process to execute the input command
+            pid = fork();
+        else{
+            // If the command is exit flag should_run and not fork
+            should_run = 0;
+        }
 
         // I got the following from the slides 
         if (pid < 0) { // if an error occurs
