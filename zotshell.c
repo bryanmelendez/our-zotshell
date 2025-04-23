@@ -11,10 +11,10 @@
 int main(void)
 {
     char input[MAX_LINE];
-    char *args[MAX_LINE/2 + 1]; /* command line arguments */
+    char *args[MAX_LINE/2 + 1] = {NULL}; /* command line arguments */
 
     int should_run = 1; /* flag to determine when to exit program */
-    char *history[MAX_LINE/2 + 1];
+    char *history[MAX_LINE/2 + 1] = {NULL};
 
 
     while (should_run) {
@@ -40,19 +40,27 @@ int main(void)
             should_run = 0;
         else if(strcmp(args[0], "!!") == 0)
         {
-            printf("want history!\n");
-            printf("last cmd: %s\n", history[0]);
-        }
-        else{
-            // If the command is not exit
-            // fork the process to execute the input command
-            // TODO: Issue is that !! is still added to the history
-            if(strcmp(args[0], "!!") != 0)
+            if (history[0] == NULL)
+                printf("No commands in history!\n");
+            else 
             {
-                memcpy(history, args, MAX_LINE/2 + 1);
-                printf("Added :%s to history!\n", history[0]);
+                printf("Last command: %s\n", history[0]);
+                memcpy(args, history, MAX_LINE/2 + 1);
+                pid = fork();
             }
-
+        }
+        else {
+            // Deep copying args to history so it doesn't get overwritten the next iteration
+            for (int i = 0; i < MAX_LINE/2 + 1; i++) 
+            {
+                if (history[i] != NULL)
+                    free(history[i]); // Free previously allocated memory
+                if (args[i] != NULL)
+                    history[i] = strdup(args[i]); // Duplicate the string
+                else
+                    history[i] = NULL; // Ensure null-termination
+            }
+            printf("Added: %s to history!\n", history[0]);
             pid = fork();
         }
 
