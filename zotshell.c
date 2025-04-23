@@ -14,6 +14,7 @@ int main(void)
     char *args[MAX_LINE/2 + 1]; /* command line arguments */
 
     int should_run = 1; /* flag to determine when to exit program */
+    char *history[MAX_LINE/2 + 1];
 
 
     while (should_run) {
@@ -34,13 +35,25 @@ int main(void)
         args[++arg_num] = NULL; // terminates the argument list
         
         // If statements to handle the exit condition
-        if(strcmp(args[0], "exit") != 0)
-            // If the command is not exit
-            // fork the process to execute the input command
-            pid = fork();
-        else{
+        if(strcmp(args[0], "exit") == 0)
             // If the command is exit flag should_run and not fork
             should_run = 0;
+        else if(strcmp(args[0], "!!") == 0)
+        {
+            printf("want history!\n");
+            printf("last cmd: %s\n", history[0]);
+        }
+        else{
+            // If the command is not exit
+            // fork the process to execute the input command
+            // TODO: Issue is that !! is still added to the history
+            if(strcmp(args[0], "!!") != 0)
+            {
+                memcpy(history, args, MAX_LINE/2 + 1);
+                printf("Added :%s to history!\n", history[0]);
+            }
+
+            pid = fork();
         }
 
         // I got the following from the slides 
@@ -49,7 +62,11 @@ int main(void)
             return 1;
         }
         else if (pid == 0) { // child process
+            
             execvp(args[0], args);
+            //memcpy(history, args, MAX_LINE/2 + 1); 
+                
+            
             if (errno == ENOENT) {
                 fprintf(stderr, "%s: command not found\n", args[0]);
                 exit(1);
