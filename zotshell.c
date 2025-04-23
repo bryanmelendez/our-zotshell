@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #define MAX_LINE 80  /* The maximum length command */
 
@@ -76,10 +77,27 @@ int main(void)
             return 1;
         }
         else if (pid == 0) { // child process
-            
-            execvp(args[0], args);
-            //memcpy(history, args, MAX_LINE/2 + 1); 
-                
+            // determine whether or not we need to read or write from a file
+            if(strcmp(args[1], ">") == 0)
+            {
+                // WRITE OUTPUT OF EXECVP TO A FILE:
+                int fdOut = open("output.txt", O_WRONLY, 0666);
+
+                // then call execvp??
+            }
+            else if(strcmp(args[1], "<") == 0)
+            {
+                // HERE WE NEED TO READ THE ARGS FROM A FILE
+
+                // then call execvp??
+            }
+            else
+            {
+                // If we don't need to write to a file, or read from a file just execute normally
+                execvp(args[0], args);
+            }
+
+            // EXECVP used to be here     
             
             if (errno == ENOENT) {
                 fprintf(stderr, "%s: command not found\n", args[0]);
