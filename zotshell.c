@@ -41,10 +41,16 @@ int main(void)
         else if(strcmp(args[0], "!!") == 0)
         {
             if (history[0] == NULL)
-                printf("No commands in history!\n");
+                printf("No commands in history\n");
             else 
             {
-                printf("Last command: %s\n", history[0]);
+                int k = 0;
+                while(history[k] != NULL)
+                {
+                    printf("%s ", history[k]);
+                    k++;
+                }
+                printf("\n");
                 memcpy(args, history, MAX_LINE/2 + 1);
                 pid = fork();
             }
@@ -60,7 +66,7 @@ int main(void)
                 else
                     history[i] = NULL; // Ensure null-termination
             }
-            printf("Added: %s to history!\n", history[0]);
+            //printf("Added: %s to history!\n", history[0]);
             pid = fork();
         }
 
