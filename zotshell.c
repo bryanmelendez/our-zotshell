@@ -3,6 +3,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <stdlib.h>
+#include <errno.h>
 
 #define MAX_LINE 80  /* The maximum length command */
 
@@ -48,6 +50,13 @@ int main(void)
         }
         else if (pid == 0) { // child process
             execvp(args[0], args);
+            if (errno == ENOENT) {
+                fprintf(stderr, "%s: command not found\n", args[0]);
+                exit(1);
+            } else {
+                fprintf(stderr, "%s: %s\n", args[0], strerror(errno));
+                exit(1);
+            }
         }
         else { // parent process
             wait(NULL);
