@@ -23,8 +23,16 @@ int main(void)
 
         printf("osh>");
 
-        scanf("%[^\n]", input);
+        scanf("%[^\n]", input); // scans up until the newline
         getchar(); // consumes the newline
+        
+        // check if nothing was inputted
+        if (input[0] == '\006' || input[0] == '\000') {
+            fflush(stdout);
+            fflush(stdin);
+            memset(input, '\0', sizeof(input));
+            continue;
+        }
 
         args[arg_num] = strtok(input, " ");
 
