@@ -23,6 +23,7 @@ int main(void)
 
     while (should_run) {
         int arg_num = 0;
+        int background_flag = 0;
         int fork_flag = 1; //initialize to fork
         int pipe_flag = 0;
         pid_t pid = 0;
@@ -116,6 +117,15 @@ int main(void)
         int redirection = 0;
         char *file;
 
+        //loop through arguments to look for & operator
+        for (int i = 1; i<=arg_num; i++) {
+            //check for output redirection
+            if(args[i] != NULL && strcmp(args[i], "&") == 0) {
+                background_flag = 1;
+                args[i] = NULL;
+            }
+        }
+
         //loop through arguments to look for > or < operator
         for (int i = 1; i<=arg_num; i++) {
             //check for output redirection
@@ -196,13 +206,12 @@ int main(void)
                     exit(1);
                 }
             }
-            else { // parent process
+            else if (background_flag == 0) { // parent process
                 wait(NULL);
                 // we only need to wait if user does not put &
                 // in the command
             }
         }
-    
 
         // flush input and output just in case something weird is still in there
         fflush(stdout);
