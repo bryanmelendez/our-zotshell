@@ -207,7 +207,7 @@ int main(void)
                 }
             }
             else if (background_flag == 0) { // parent process
-                wait(NULL);
+                waitpid(pid, NULL, 0);
                 // we only need to wait if user does not put &
                 // in the command
             }
