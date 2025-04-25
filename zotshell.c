@@ -183,16 +183,16 @@ int main(void)
             }
             else if (pid == 0) { // child process
 
-            if (redirection==1) {
-                int fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644); //open or create file
-                dup2(fd, STDOUT_FILENO);
-                close(fd);
-            }
-            else if (redirection==2) {
-                int fd = open(file, O_RDONLY); //open or create file
-                dup2(fd, STDIN_FILENO);
-                close(fd);
-            }
+                if (redirection==1) {
+                    int fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644); //open or create file
+                    dup2(fd, STDOUT_FILENO);
+                    close(fd);
+                }
+                else if (redirection==2) {
+                    int fd = open(file, O_RDONLY); //open or create file
+                    dup2(fd, STDIN_FILENO);
+                    close(fd);
+                }
 
                 execvp(args[0], args);
                 //memcpy(history, args, MAX_LINE/2 + 1);
